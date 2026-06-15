@@ -116,6 +116,107 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void editMeal(
+    String newName,
+    String newDetails,
+    MealCategory newCategory,
+    Meal oldMeal,
+  ) {
+    final mealProvider = context.read<MealProvider>();
+
+    mealProvider.updateMeal(
+      oldMeal,
+      Meal(name: newName, details: newDetails, category: newCategory),
+    );
+  }
+
+  void openEditMeal(Meal meal) {
+    TextEditingController nameController = TextEditingController(
+      text: meal.name,
+    );
+    TextEditingController detailsController = TextEditingController(
+      text: meal.details,
+    );
+    MealCategory selectedCategory = meal.category;
+    final localKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Meal'),
+          content: Form(
+            key: localKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(hintText: 'Meal Name'),
+                  controller: nameController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Meal name cannot be empty.';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(hintText: 'Meal Details'),
+                  controller: detailsController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Meal details cannot be empty.';
+                    }
+                    return null;
+                  },
+                ),
+                DropdownButtonFormField(
+                  initialValue: meal.category,
+                  items: MealCategory.values.map((category) {
+                    return DropdownMenuItem(
+                      value: category,
+                      child: Text(category.name),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value == null) return;
+
+                    setState(() {
+                      selectedCategory = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (localKey.currentState!.validate()) {
+                  Navigator.pop(context);
+
+                  editMeal(
+                    nameController.text.trim(),
+                    detailsController.text.trim(),
+                    selectedCategory,
+                    meal,
+                  );
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,7 +253,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'Breakfast',
                           child: Column(
                             children: breakfasts
-                                .map((meal) => MealTile(meal: meal))
+                                .map(
+                                  (meal) => MealTile(
+                                    meal: meal,
+                                    openEditMeal: openEditMeal,
+                                  ),
+                                )
                                 .toList(),
                           ),
                         ),
@@ -161,7 +267,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'Lunch',
                           child: Column(
                             children: lunches
-                                .map((meal) => MealTile(meal: meal))
+                                .map(
+                                  (meal) => MealTile(
+                                    meal: meal,
+                                    openEditMeal: openEditMeal,
+                                  ),
+                                )
                                 .toList(),
                           ),
                         ),
@@ -170,7 +281,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'Dinner',
                           child: Column(
                             children: dinners
-                                .map((meal) => MealTile(meal: meal))
+                                .map(
+                                  (meal) => MealTile(
+                                    meal: meal,
+                                    openEditMeal: openEditMeal,
+                                  ),
+                                )
                                 .toList(),
                           ),
                         ),

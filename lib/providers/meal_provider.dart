@@ -39,6 +39,16 @@ class MealProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateMeal(Meal oldMeal, Meal updatedMeal) async {
+    final index = _meals.indexOf(oldMeal);
+
+    _meals[index] = updatedMeal;
+
+    await _mealService.saveMeals(_meals);
+
+    notifyListeners();
+  }
+
   double get progress {
     if (_meals.isEmpty) return 0;
 
