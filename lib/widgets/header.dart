@@ -16,7 +16,7 @@ class Header extends StatelessWidget {
           children: [
             const Text(
               'Meal Planner',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
             ),
             const SizedBox(height: 16),
             const Text("Today's Progress"),

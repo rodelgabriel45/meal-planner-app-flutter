@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meal_planner_app/models/meal.dart';
+import 'package:meal_planner_app/widgets/category_section.dart';
 import 'package:meal_planner_app/widgets/meal_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:meal_planner_app/providers/meal_provider.dart';
@@ -125,8 +126,59 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Header(),
 
+              const SizedBox(height: 32),
+
               // List tile of Meals
-              MealTile(),
+              Expanded(
+                child: Consumer<MealProvider>(
+                  builder: (context, provider, child) {
+                    final breakfasts = provider.mealsByCategory(
+                      MealCategory.breakfast,
+                    );
+                    final lunches = provider.mealsByCategory(
+                      MealCategory.lunch,
+                    );
+                    final dinners = provider.mealsByCategory(
+                      MealCategory.dinner,
+                    );
+
+                    if (provider.meals.isEmpty) {
+                      return const Center(child: Text('No meals added yet.'));
+                    }
+
+                    return ListView(
+                      children: [
+                        CategorySection(
+                          title: 'Breakfast',
+                          child: Column(
+                            children: breakfasts
+                                .map((meal) => MealTile(meal: meal))
+                                .toList(),
+                          ),
+                        ),
+
+                        CategorySection(
+                          title: 'Lunch',
+                          child: Column(
+                            children: lunches
+                                .map((meal) => MealTile(meal: meal))
+                                .toList(),
+                          ),
+                        ),
+
+                        CategorySection(
+                          title: 'Dinner',
+                          child: Column(
+                            children: dinners
+                                .map((meal) => MealTile(meal: meal))
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
