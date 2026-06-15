@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meal_planner_app/models/meal.dart';
 import 'package:meal_planner_app/widgets/category_section.dart';
+import 'package:meal_planner_app/widgets/meal_form_dialog.dart';
 import 'package:meal_planner_app/widgets/meal_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:meal_planner_app/providers/meal_provider.dart';
@@ -14,8 +15,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _formKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     super.initState();
@@ -27,194 +26,34 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void addMeal(String mealName, String mealDetails, MealCategory category) {
-    final mealProvider = context.read<MealProvider>();
-
-    mealProvider.addMeal(
-      Meal(name: mealName, details: mealDetails, category: category),
-    );
-  }
-
-  void openAddMeal() {
-    TextEditingController nameController = TextEditingController();
-    TextEditingController detailsController = TextEditingController();
-    MealCategory selectedCategory = MealCategory.breakfast;
-
-    showDialog(
+  Future<void> openAddMeal() async {
+    final Meal? meal = await showDialog<Meal>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Add new meal'),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(hintText: 'Meal Name'),
-                  controller: nameController,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Meal name must be provided.';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(hintText: 'Meal details'),
-                  controller: detailsController,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Meal details cannot be empty.';
-                    }
-                    return null;
-                  },
-                ),
-                DropdownButtonFormField<MealCategory>(
-                  initialValue: selectedCategory,
-                  items: MealCategory.values.map((category) {
-                    return DropdownMenuItem(
-                      value: category,
-                      child: Text(category.name),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value == null) return;
-
-                    setState(() {
-                      selectedCategory = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  Navigator.pop(context);
-
-                  addMeal(
-                    nameController.text.trim(),
-                    detailsController.text.trim(),
-                    selectedCategory,
-                  );
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
+        return const MealFormDialog(title: 'Add a new meal');
       },
     );
+
+    if (meal == null) return;
+
+    if (mounted) {
+      context.read<MealProvider>().addMeal(meal);
+    }
   }
 
-  void editMeal(
-    String newName,
-    String newDetails,
-    MealCategory newCategory,
-    Meal oldMeal,
-  ) {
-    final mealProvider = context.read<MealProvider>();
-
-    mealProvider.updateMeal(
-      oldMeal,
-      Meal(name: newName, details: newDetails, category: newCategory),
-    );
-  }
-
-  void openEditMeal(Meal meal) {
-    TextEditingController nameController = TextEditingController(
-      text: meal.name,
-    );
-    TextEditingController detailsController = TextEditingController(
-      text: meal.details,
-    );
-    MealCategory selectedCategory = meal.category;
-    final localKey = GlobalKey<FormState>();
-
-    showDialog(
+  Future<void> openEditMeal(Meal oldMeal) async {
+    final Meal? updatedMeal = await showDialog<Meal>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Meal'),
-          content: Form(
-            key: localKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(hintText: 'Meal Name'),
-                  controller: nameController,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Meal name cannot be empty.';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(hintText: 'Meal Details'),
-                  controller: detailsController,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Meal details cannot be empty.';
-                    }
-                    return null;
-                  },
-                ),
-                DropdownButtonFormField(
-                  initialValue: meal.category,
-                  items: MealCategory.values.map((category) {
-                    return DropdownMenuItem(
-                      value: category,
-                      child: Text(category.name),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value == null) return;
-
-                    setState(() {
-                      selectedCategory = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (localKey.currentState!.validate()) {
-                  Navigator.pop(context);
-
-                  editMeal(
-                    nameController.text.trim(),
-                    detailsController.text.trim(),
-                    selectedCategory,
-                    meal,
-                  );
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
+        return MealFormDialog(title: 'Edit Meal', meal: oldMeal);
       },
     );
+
+    if (updatedMeal == null) return;
+
+    if (mounted) {
+      context.read<MealProvider>().updateMeal(oldMeal, updatedMeal);
+    }
   }
 
   @override

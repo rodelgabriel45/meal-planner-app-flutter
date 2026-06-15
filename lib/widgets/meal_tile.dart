@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class MealTile extends StatelessWidget {
   final Meal meal;
-  final Function openEditMeal;
+  final void Function(Meal meal) openEditMeal;
   const MealTile({super.key, required this.meal, required this.openEditMeal});
 
   @override
