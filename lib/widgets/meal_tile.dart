@@ -27,8 +27,36 @@ class MealTile extends StatelessWidget {
           ),
           SlidableAction(
             backgroundColor: Colors.red,
-            onPressed: (_) {
-              provider.deleteMeal(meal);
+            onPressed: (_) async {
+              final shouldDelete = await showDialog<bool>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Delete meal'),
+                    content: const Text(
+                      'Are you sure you want to delete this meal?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, false);
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('Delete'),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (shouldDelete == true) {
+                provider.deleteMeal(meal);
+              }
             },
             icon: Icons.delete,
             label: 'Delete',
@@ -36,17 +64,24 @@ class MealTile extends StatelessWidget {
         ],
       ),
 
-      child: ListTile(
-        title: Text(
-          meal.name,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: Colors.grey, width: 1),
         ),
-        subtitle: Text(meal.details),
-        trailing: Checkbox(
-          value: meal.isCompleted,
-          onChanged: (_) {
-            provider.toggleMeal(meal);
-          },
+        child: ListTile(
+          title: Text(
+            meal.name,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          subtitle: Text(meal.details),
+          trailing: Checkbox(
+            value: meal.isCompleted,
+            onChanged: (_) {
+              provider.toggleMeal(meal);
+            },
+          ),
         ),
       ),
     );

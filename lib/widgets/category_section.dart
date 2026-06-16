@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:meal_planner_app/models/meal.dart';
+import 'package:meal_planner_app/widgets/meal_tile.dart';
 
 class CategorySection extends StatelessWidget {
   final String title;
-  final Widget child;
+  final List<Meal> meals;
+  final void Function(Meal meal) openEditMeal;
 
-  const CategorySection({super.key, required this.title, required this.child});
+  const CategorySection({
+    super.key,
+    required this.title,
+    required this.meals,
+    required this.openEditMeal,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +21,23 @@ class CategorySection extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
+
         const SizedBox(height: 8),
-        child,
+
+        if (meals.isEmpty)
+          const Text(
+            'No meals added yet.',
+            style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+          )
+        else
+          Column(
+            children: meals
+                .map((meal) => MealTile(meal: meal, openEditMeal: openEditMeal))
+                .toList(),
+          ),
+
         const SizedBox(height: 16),
       ],
     );

@@ -49,6 +49,10 @@ class MealProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  int get completedMeals => _meals.where((meal) => meal.isCompleted).length;
+
+  int get totalMeals => _meals.length;
+
   double get progress {
     if (_meals.isEmpty) return 0;
 
