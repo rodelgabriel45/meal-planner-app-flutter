@@ -10,6 +10,7 @@ class Header extends StatelessWidget {
     final mealProvider = context.watch<MealProvider>();
 
     return Card(
+      elevation: 10,
       child: Padding(
         padding: EdgeInsets.all(20),
         child: Column(

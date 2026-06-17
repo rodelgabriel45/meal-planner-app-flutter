@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meal_planner_app/providers/meal_provider.dart';
+import 'package:meal_planner_app/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -66,6 +67,54 @@ class SettingsScreen extends StatelessWidget {
 
                   await mealProvider.clearMeals();
                 }
+              },
+            ),
+
+            Consumer<ThemeProvider>(
+              builder: (context, provider, child) {
+                return ListTile(
+                  leading: const Icon(Icons.palette),
+                  title: const Text('Theme'),
+                  subtitle: Text(provider.themeMode.name),
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              title: const Text('Light'),
+                              onTap: () {
+                                provider.setTheme(ThemeMode.light);
+
+                                Navigator.pop(context);
+                              },
+                            ),
+
+                            ListTile(
+                              title: const Text('Dark'),
+                              onTap: () {
+                                provider.setTheme(ThemeMode.dark);
+
+                                Navigator.pop(context);
+                              },
+                            ),
+
+                            ListTile(
+                              title: const Text('System'),
+                              onTap: () {
+                                provider.setTheme(ThemeMode.system);
+
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                );
               },
             ),
           ],

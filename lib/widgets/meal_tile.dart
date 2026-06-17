@@ -19,14 +19,17 @@ class MealTile extends StatelessWidget {
         children: [
           SlidableAction(
             backgroundColor: Colors.blue,
+            borderRadius: BorderRadius.circular(16),
             onPressed: (_) {
               openEditMeal(meal);
             },
             icon: Icons.edit,
             label: 'Edit',
           ),
+          const SizedBox(width: 4),
           SlidableAction(
             backgroundColor: Colors.red,
+            borderRadius: BorderRadius.circular(16),
             onPressed: (_) async {
               final shouldDelete = await showDialog<bool>(
                 context: context,
