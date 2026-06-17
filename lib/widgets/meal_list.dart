@@ -16,6 +16,7 @@ class MealList extends StatelessWidget {
           final breakfasts = provider.mealsByCategory(MealCategory.breakfast);
           final lunches = provider.mealsByCategory(MealCategory.lunch);
           final dinners = provider.mealsByCategory(MealCategory.dinner);
+          final snacks = provider.mealsByCategory(MealCategory.snack);
 
           if (provider.meals.isEmpty) {
             return const Center(child: Text('No meals added yet.'));
@@ -38,6 +39,12 @@ class MealList extends StatelessWidget {
               CategorySection(
                 title: 'Dinner',
                 meals: dinners,
+                openEditMeal: openEditMeal,
+              ),
+
+              CategorySection(
+                title: 'Snack',
+                meals: snacks,
                 openEditMeal: openEditMeal,
               ),
             ],

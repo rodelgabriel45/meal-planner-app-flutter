@@ -28,6 +28,18 @@ class Header extends StatelessWidget {
               '${mealProvider.completedMeals} of ${mealProvider.totalMeals} meals completed',
             ),
             const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Total Calories:'),
+                const SizedBox(width: 4),
+                Text(
+                  '${mealProvider.totalCalories.toString()} kcal',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
             LinearProgressIndicator(value: mealProvider.progress),
             Text('${(mealProvider.progress * 100).toInt()}%'),
           ],

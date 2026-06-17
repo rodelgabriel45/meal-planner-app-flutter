@@ -1,4 +1,4 @@
-enum MealCategory { breakfast, lunch, dinner }
+enum MealCategory { breakfast, lunch, dinner, snack }
 
 extension MealCategoryExtension on MealCategory {
   String get displayName {
@@ -9,6 +9,8 @@ extension MealCategoryExtension on MealCategory {
         return 'Lunch';
       case MealCategory.dinner:
         return 'Dinner';
+      case MealCategory.snack:
+        return 'Snack';
     }
   }
 }
@@ -18,12 +20,14 @@ class Meal {
   final String details;
   final MealCategory category;
   bool isCompleted;
+  final int calories;
 
   Meal({
     required this.name,
     required this.details,
     required this.category,
     this.isCompleted = false,
+    required this.calories,
   });
 
   Map<String, dynamic> toJson() {
@@ -32,6 +36,7 @@ class Meal {
       'details': details,
       'category': category.name,
       'isCompleted': isCompleted,
+      'calories': calories,
     };
   }
 
@@ -42,7 +47,8 @@ class Meal {
       category: MealCategory.values.firstWhere(
         (c) => c.name == json['category'],
       ),
-      isCompleted: json['isCompleted'],
+      isCompleted: json['isCompleted'] ?? false,
+      calories: json['calories'] ?? 0,
     );
   }
 }

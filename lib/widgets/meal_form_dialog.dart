@@ -16,6 +16,7 @@ class _MealFormDialogState extends State<MealFormDialog> {
 
   late TextEditingController _nameController;
   late TextEditingController _detailsController;
+  late TextEditingController _caloriesController;
 
   late MealCategory _selectedCategory;
 
@@ -28,6 +29,10 @@ class _MealFormDialogState extends State<MealFormDialog> {
       text: widget.meal?.details ?? '',
     );
 
+    _caloriesController = TextEditingController(
+      text: widget.meal?.calories.toString() ?? '',
+    );
+
     _selectedCategory = widget.meal?.category ?? MealCategory.breakfast;
   }
 
@@ -35,6 +40,7 @@ class _MealFormDialogState extends State<MealFormDialog> {
   void dispose() {
     _nameController.dispose();
     _detailsController.dispose();
+    _caloriesController.dispose();
 
     super.dispose();
   }
@@ -50,6 +56,7 @@ class _MealFormDialogState extends State<MealFormDialog> {
         name: _nameController.text.trim(),
         details: _detailsController.text.trim(),
         category: _selectedCategory,
+        calories: int.parse(_caloriesController.text),
       ),
     );
   }
@@ -79,6 +86,22 @@ class _MealFormDialogState extends State<MealFormDialog> {
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Meal details cannot be empty.';
+                }
+                return null;
+              },
+            ),
+
+            TextFormField(
+              controller: _caloriesController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(hintText: 'Calories'),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Calories required.';
+                }
+
+                if (int.tryParse(value) == null) {
+                  return 'Please enter a valid number.';
                 }
                 return null;
               },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meal_planner_app/models/meal.dart';
+import 'package:meal_planner_app/screens/settings_screen.dart';
 import 'package:meal_planner_app/widgets/meal_form_dialog.dart';
 import 'package:meal_planner_app/widgets/meal_list.dart';
 import 'package:provider/provider.dart';
@@ -63,9 +64,27 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+              Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SettingsScreen(),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.settings),
+                    ),
+                  ),
+                ],
+              ),
               const Header(),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
 
               // List tile of Meals
               MealList(openEditMeal: openEditMeal),

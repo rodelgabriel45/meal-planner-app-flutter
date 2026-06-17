@@ -73,9 +73,21 @@ class MealTile extends StatelessWidget {
         child: ListTile(
           title: Text(
             meal.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              decoration: meal.isCompleted ? TextDecoration.lineThrough : null,
+            ),
           ),
-          subtitle: Text(meal.details),
+          subtitle: Column(
+            children: [
+              Text(meal.details),
+              Text(
+                '${meal.calories} kcal',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ],
+          ),
           trailing: Checkbox(
             value: meal.isCompleted,
             onChanged: (_) {

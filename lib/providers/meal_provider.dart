@@ -49,9 +49,21 @@ class MealProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> clearMeals() async {
+    _meals.clear();
+
+    await _mealService.clearMeals();
+
+    notifyListeners();
+  }
+
   int get completedMeals => _meals.where((meal) => meal.isCompleted).length;
 
   int get totalMeals => _meals.length;
+
+  int get totalCalories {
+    return _meals.fold(0, (sum, meal) => sum + meal.calories);
+  }
 
   double get progress {
     if (_meals.isEmpty) return 0;
