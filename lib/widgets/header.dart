@@ -12,17 +12,12 @@ class Header extends StatelessWidget {
     return Card(
       elevation: 6,
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(16),
         child: Column(
           children: [
             const Text(
-              'Meal Planner',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-            ),
-            const SizedBox(height: 8),
-            const Text(
               "Today's Progress",
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             const SizedBox(height: 8),
             Text(

@@ -60,39 +60,46 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Image.asset('assets/images/meal_plan_logo.png', height: 70),
+
+            const SizedBox(width: 4),
+
+            const Text(
+              'Meal Planner',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SavedMealsScreen()),
+              );
+            },
+            icon: Icon(Icons.save),
+          ),
+
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsScreen()),
+              );
+            },
+            icon: Icon(Icons.settings),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SavedMealsScreen(),
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.save),
-                  ),
-
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SettingsScreen(),
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.settings),
-                  ),
-                ],
-              ),
               const Header(),
 
               const SizedBox(height: 16),
