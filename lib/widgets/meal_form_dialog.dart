@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:meal_planner_app/models/meal.dart';
+import 'package:meal_planner_app/models/saved_meal.dart';
+import 'package:meal_planner_app/providers/saved_meal_provider.dart';
+import 'package:provider/provider.dart';
 
 class MealFormDialog extends StatefulWidget {
   final String title;
@@ -61,6 +64,53 @@ class _MealFormDialogState extends State<MealFormDialog> {
     );
   }
 
+  Future<void> openMealTemplatePicker() async {
+    final savedMeal = await showModalBottomSheet<SavedMeal>(
+      context: context,
+      builder: (context) {
+        final savedMeals = context.read<SavedMealProvider>().savedMeals;
+
+        return SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+
+              const Text(
+                'Choose Meal Template',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+
+              const Divider(),
+
+              Expanded(
+                child: ListView.builder(
+                  itemCount: savedMeals.length,
+                  itemBuilder: (context, index) {
+                    final meal = savedMeals[index];
+
+                    return ListTile(
+                      title: Text(meal.name),
+                      subtitle: Text('${meal.calories} kcal'),
+                      onTap: () {
+                        Navigator.pop(context, meal);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (savedMeal == null) return;
+
+    _nameController.text = savedMeal.name;
+    _detailsController.text = savedMeal.details;
+    _caloriesController.text = savedMeal.calories.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -70,6 +120,12 @@ class _MealFormDialogState extends State<MealFormDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            FilledButton.icon(
+              onPressed: openMealTemplatePicker,
+              icon: const Icon(Icons.restaurant_menu),
+              label: const Text('Choose a Template meal'),
+            ),
+
             TextFormField(
               decoration: const InputDecoration(hintText: 'Meal Name'),
               controller: _nameController,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:meal_planner_app/models/meal.dart';
+import 'package:meal_planner_app/models/saved_meal.dart';
 import 'package:meal_planner_app/providers/meal_provider.dart';
+import 'package:meal_planner_app/providers/saved_meal_provider.dart';
 import 'package:provider/provider.dart';
 
 class MealTile extends StatelessWidget {
@@ -12,6 +14,7 @@ class MealTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<MealProvider>();
+    final savedMealProvider = context.read<SavedMealProvider>();
 
     return Slidable(
       endActionPane: ActionPane(
@@ -64,15 +67,43 @@ class MealTile extends StatelessWidget {
             icon: Icons.delete,
             label: 'Delete',
           ),
+
+          const SizedBox(width: 4),
+
+          SlidableAction(
+            backgroundColor: Colors.blueGrey,
+            borderRadius: BorderRadius.circular(16),
+            onPressed: (_) {
+              if (savedMealProvider.savedMeals.any(
+                (savedMeal) => savedMeal.name == meal.name,
+              )) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('Meal already saved')));
+                return;
+              }
+
+              savedMealProvider.addMeal(
+                SavedMeal(
+                  name: meal.name,
+                  details: meal.details,
+                  calories: meal.calories,
+                ),
+              );
+
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Meal template saved')));
+            },
+            icon: Icons.save,
+            label: 'Save',
+          ),
         ],
       ),
 
       child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: Colors.grey, width: 1),
-        ),
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: ListTile(
           title: Text(
             meal.name,

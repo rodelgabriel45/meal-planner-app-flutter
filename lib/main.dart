@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meal_planner_app/providers/meal_provider.dart';
+import 'package:meal_planner_app/providers/saved_meal_provider.dart';
 import 'package:meal_planner_app/providers/theme_provider.dart';
 import 'package:meal_planner_app/screens/home_screen.dart';
 import 'package:meal_planner_app/theme/app_theme.dart';
@@ -10,6 +11,15 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MealProvider()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final provider = SavedMealProvider();
+
+            provider.loadMeals();
+
+            return provider;
+          },
+        ),
         ChangeNotifierProvider(
           create: (_) {
             final provider = ThemeProvider();

@@ -30,17 +30,23 @@ class MealList extends StatelessWidget {
                 openEditMeal: openEditMeal,
               ),
 
+              const Divider(),
+
               CategorySection(
                 title: 'Lunch',
                 meals: lunches,
                 openEditMeal: openEditMeal,
               ),
 
+              const Divider(),
+
               CategorySection(
                 title: 'Dinner',
                 meals: dinners,
                 openEditMeal: openEditMeal,
               ),
+
+              const Divider(),
 
               CategorySection(
                 title: 'Snack',
